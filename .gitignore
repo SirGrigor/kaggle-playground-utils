@@ -18,3 +18,6 @@ catboost_info/
 logs/
 diagnostics/
 submissions/
+.idea/
+.vscode/
+.ipynb_checkpoints/

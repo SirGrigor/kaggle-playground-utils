@@ -4,32 +4,35 @@ Run: uv run python notebooks/_build_notebook.py
 Output: notebooks/s6e4_signal_factory_tutorial.ipynb
 """
 import json
-import uuid
+import hashlib
 from pathlib import Path
 from textwrap import dedent
 
 
-def _id() -> str:
-    return uuid.uuid4().hex[:12]
+def _id(src: str) -> str:
+    """Deterministic cell id from content — stable across rebuilds."""
+    return hashlib.sha1(src.encode()).hexdigest()[:12]
 
 
 def md(src: str) -> dict:
+    body = dedent(src).strip("\n")
     return {
         "cell_type": "markdown",
-        "id": _id(),
+        "id": _id(body),
         "metadata": {},
-        "source": dedent(src).strip("\n"),
+        "source": body,
     }
 
 
 def code(src: str) -> dict:
+    body = dedent(src).strip("\n")
     return {
         "cell_type": "code",
-        "id": _id(),
+        "id": _id(body),
         "execution_count": None,
         "metadata": {},
         "outputs": [],
-        "source": dedent(src).strip("\n"),
+        "source": body,
     }
 
 
