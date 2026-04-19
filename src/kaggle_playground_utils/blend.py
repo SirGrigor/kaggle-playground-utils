@@ -25,8 +25,16 @@ def _normalize(p: np.ndarray) -> np.ndarray:
 
 
 def _load_splits(registry: Registry, tags: list[str] | None = None,
-                 split: str = "holdout") -> tuple[list[str], list[np.ndarray]]:
-    """Load one split (oof/holdout/test) from all matching registered models."""
+                 split: str = "holdout_probs",
+                 apply_tuning: bool = True) -> tuple[list[str], list[np.ndarray]]:
+    """Load one split (oof/holdout/test) from all matching registered models.
+
+    Args:
+        apply_tuning: if True and each model has best_cw saved, apply each model's
+                     Optuna-tuned class weights before returning (i.e., return
+                     TUNED probs, not raw). This is usually what you want for
+                     blending — otherwise the blend loses each model's tuning.
+    """
     if split not in {"oof_probs", "holdout_probs", "test_probs"}:
         raise ValueError(f"split must be one of oof_probs/holdout_probs/test_probs, got {split}")
     models = registry.list_models(tags=tags)
@@ -34,8 +42,11 @@ def _load_splits(registry: Registry, tags: list[str] | None = None,
     for m in models:
         loaded = registry.load_probs(m["registry_id"])
         if split in loaded:
+            p = loaded[split]
+            if apply_tuning and "best_cw" in loaded:
+                p = _normalize(p * loaded["best_cw"])
             ids.append(m["registry_id"])
-            probs.append(loaded[split])
+            probs.append(p)
     return ids, probs
 
 
