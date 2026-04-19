@@ -1,0 +1,44 @@
+[project]
+name = "kaggle-playground-utils"
+version = "0.1.0"
+description = "Reusable toolkit for Kaggle Playground Series competitions: features, training, registry, blending, probes, diagnostics."
+authors = [{name = "Ilja Grigorjev"}]
+readme = "README.md"
+license = {text = "MIT"}
+requires-python = ">=3.10"
+
+dependencies = [
+    "numpy>=1.24",
+    "pandas>=2.0",
+    "scikit-learn>=1.3",
+    "scipy>=1.11",
+    "xgboost>=2.0",
+    "lightgbm>=4.0",
+    "catboost>=1.2",
+    "optuna>=3.0",
+    "joblib>=1.3",
+]
+
+[project.optional-dependencies]
+diagnose = ["shap>=0.44", "matplotlib>=3.7", "seaborn>=0.12"]
+mlp = ["torch>=2.0"]
+dev = ["pytest>=7.0", "ruff>=0.1"]
+
+[project.urls]
+"Homepage" = "https://github.com/ilgrig/kaggle-playground-utils"
+"Issues" = "https://github.com/ilgrig/kaggle-playground-utils/issues"
+
+[build-system]
+requires = ["hatchling"]
+build-backend = "hatchling.build"
+
+[tool.hatch.build.targets.wheel]
+packages = ["src/kaggle_playground_utils"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
+
+[tool.ruff]
+line-length = 100
+target-version = "py310"
