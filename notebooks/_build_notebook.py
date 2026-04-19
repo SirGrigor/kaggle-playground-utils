@@ -117,8 +117,29 @@ np.random.seed(42)
 """))
 
 CELLS.append(code("""
-# Kaggle path — change if running locally
-DATA_DIR = "/kaggle/input/playground-series-s6e4"
+import os
+
+# Auto-detect data path — works on Kaggle (with competition attached) or locally
+def find_data_dir():
+    candidates = [
+        "/kaggle/input/playground-series-s6e4",
+        "/kaggle/input/playground-series-season-6-episode-4",
+    ]
+    for p in candidates:
+        if os.path.exists(f"{p}/train.csv"):
+            return p
+    # Fallback: search /kaggle/input recursively for train.csv
+    if os.path.exists("/kaggle/input"):
+        for root, _, files in os.walk("/kaggle/input"):
+            if "train.csv" in files:
+                return root
+    raise FileNotFoundError(
+        "Competition data not found. On Kaggle: attach 'Playground Series S6E4' "
+        "via '+ Add data' in the sidebar. Locally: set DATA_DIR manually."
+    )
+
+DATA_DIR = find_data_dir()
+print(f"Using DATA_DIR = {DATA_DIR}")
 
 train = pd.read_csv(f"{DATA_DIR}/train.csv")
 print(f"Train shape: {train.shape}")

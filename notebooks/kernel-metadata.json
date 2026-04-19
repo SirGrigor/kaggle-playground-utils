@@ -1,0 +1,15 @@
+{
+  "id": "iljagrigorjev/signal-factory-automated-feature-discovery",
+  "title": "Signal Factory Automated Feature Discovery",
+  "code_file": "s6e4_signal_factory_tutorial.ipynb",
+  "language": "python",
+  "kernel_type": "notebook",
+  "is_private": "false",
+  "enable_gpu": "false",
+  "enable_tpu": "false",
+  "enable_internet": "false",
+  "dataset_sources": [],
+  "competition_sources": ["playground-series-s6e4"],
+  "kernel_sources": [],
+  "model_sources": []
+}
