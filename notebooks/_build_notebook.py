@@ -573,7 +573,7 @@ CELLS.append(md("""
 ## Links
 
 - Full toolkit on GitHub: [`kaggle-playground-utils`](https://github.com/SirGrigor/kaggle-playground-utils) — includes the train/predict side I didn't share here, plus registry, blend utilities, and caching.
-- My S6E4 post-mortem (including why I closed at LB 0.97654 without pushing further): in the repo under docs.
+- [S6E4 post-mortem](https://github.com/SirGrigor/kaggle-playground-utils/blob/master/docs/s6e4-postmortem.md) — why I closed at LB 0.97654 without pushing further (spoiler: compute parity with grandmaster-employer DGX access).
 
 Thanks for reading. Comments + fork-forks welcome.
 """))
