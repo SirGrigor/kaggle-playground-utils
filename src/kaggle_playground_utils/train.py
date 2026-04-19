@@ -59,7 +59,8 @@ def _train_xgb_fold(X_tr: pd.DataFrame, y_tr: np.ndarray,
     import xgboost as xgb
 
     sw = compute_sample_weight("balanced", y_tr)
-    m = xgb.XGBClassifier(**params, early_stopping_rounds=params.pop("early_stopping_rounds", 500))
+    early_stop = params.pop("early_stopping_rounds", 500)
+    m = xgb.XGBClassifier(**params, early_stopping_rounds=early_stop)
     m.fit(X_tr, y_tr, sample_weight=sw,
           eval_set=[(X_val, y_val)], verbose=False)
     return m, m.predict_proba(X_val), m.best_iteration
