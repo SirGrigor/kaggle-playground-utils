@@ -12,5 +12,5 @@
   "competition_sources": ["playground-series-s6e4"],
   "kernel_sources": [],
   "model_sources": [],
-  "keywords": ["feature engineering", "feature selection"]
+  "keywords": ["feature-engineering", "classification"]
 }
