@@ -25,8 +25,8 @@ mlp = ["torch>=2.0"]
 dev = ["pytest>=7.0", "ruff>=0.1"]
 
 [project.urls]
-"Homepage" = "https://github.com/ilgrig/kaggle-playground-utils"
-"Issues" = "https://github.com/ilgrig/kaggle-playground-utils/issues"
+"Homepage" = "https://github.com/SirGrigor/kaggle-playground-utils"
+"Issues" = "https://github.com/SirGrigor/kaggle-playground-utils/issues"
 
 [build-system]
 requires = ["hatchling"]
