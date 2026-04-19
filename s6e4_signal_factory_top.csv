@@ -1,0 +1,31 @@
+feature_name,mi,description,family,max_corr_with_existing
+inv_Soil_Moisture,0.20327280133582115,1 / (|Soil_Moisture| + 1),arithmetic,0.8791908315179382
+sin_Soil_Moisture,0.2025968868831165,sin(Soil_Moisture*0.1),exotic,0.8332300268193424
+cos_Soil_Moisture,0.19381279663695383,cos(Soil_Moisture*0.1),exotic,0.48252409047256
+dist_mean_Soil_Moisture,0.1927670506230521,|Soil_Moisture − mean(Soil_Moisture)|,distance,0.4911097783556724
+log1p_Rainfall_mm,0.18504150512799344,log(1 + |Rainfall_mm|),arithmetic,0.8588507203065742
+inv_Rainfall_mm,0.18438286527096182,1 / (|Rainfall_mm| + 1),arithmetic,0.5419497638818137
+dist_median_Rainfall_mm,0.17874872228990646,|Rainfall_mm − median(Rainfall_mm)|,distance,0.4020507340909321
+dist_mean_Rainfall_mm,0.1785301228342402,|Rainfall_mm − mean(Rainfall_mm)|,distance,0.40075750514371283
+ratio_Soil_Moisture_by_Temperature_C,0.16926467839398573,Soil_Moisture / Temperature_C,pairwise,0.743688348895324
+diff_Soil_Moisture_Temperature_C,0.16197014051331649,Soil_Moisture − Temperature_C,pairwise,0.8888303969047481
+sin_Rainfall_mm,0.15390540662784957,sin(Rainfall_mm*0.1),exotic,0.03322231387481226
+cos_Rainfall_mm,0.1522933652554177,cos(Rainfall_mm*0.1),exotic,0.03180281322219042
+ratio_Soil_pH_by_Soil_Moisture,0.1418384594979094,Soil_pH / Soil_Moisture,pairwise,0.8404757295419528
+lt_Soil_Moisture_p32,0.1401741359343296,Soil_Moisture < 27.770 (p32),thresholds,0.89577138766824
+dist_median_Soil_Moisture,0.1380692072742915,|Soil_Moisture − median(Soil_Moisture)|,distance,0.5218877258705097
+lt_Soil_Moisture_p23,0.1363051371242716,Soil_Moisture < 22.330 (p23),thresholds,0.886170272482137
+lt_Soil_Moisture_p36,0.12340411328161527,Soil_Moisture < 29.570 (p36),thresholds,0.8386881199434809
+ratio_Soil_Moisture_by_Sunlight_Hours,0.11593518502236311,Soil_Moisture / Sunlight_Hours,pairwise,0.8106694541338583
+prod_Soil_Moisture_x_Sunlight_Hours,0.11495882404295021,Soil_Moisture × Sunlight_Hours,pairwise,0.8362182737383431
+prod_Soil_Moisture_x_Rainfall_mm,0.1128567267667775,Soil_Moisture × Rainfall_mm,pairwise,0.7115147570249578
+lt_Soil_Moisture_p20,0.1116191309081267,Soil_Moisture < 20.760 (p20),thresholds,0.8088864507014314
+lt_Soil_Moisture_p39,0.1069909890911902,Soil_Moisture < 31.380 (p39),thresholds,0.8512547662961567
+prod_Soil_Moisture_x_Humidity,0.10176153204487792,Soil_Moisture × Humidity,pairwise,0.7902696718996877
+ratio_Soil_Moisture_by_Organic_Carbon,0.10101535647003668,Soil_Moisture / Organic_Carbon,pairwise,0.7003439160413296
+ratio_Soil_Moisture_by_Humidity,0.09923989865006866,Soil_Moisture / Humidity,pairwise,0.71970136201577
+ratio_Soil_Moisture_by_Rainfall_mm,0.09491847921221219,Soil_Moisture / Rainfall_mm,pairwise,0.4655322852645777
+lt_Soil_Moisture_p42,0.09383790093240973,Soil_Moisture < 33.580 (p42),thresholds,0.8595546791680504
+lt_Soil_Moisture_p17,0.08883815114969962,Soil_Moisture < 18.687 (p17),thresholds,0.7319535014868898
+prod_Soil_Moisture_x_Organic_Carbon,0.08295444404609542,Soil_Moisture × Organic_Carbon,pairwise,0.7113773751694131
+lt_Soil_Moisture_p45,0.08248788433378085,Soil_Moisture < 35.190 (p45),thresholds,0.8638343619136022
