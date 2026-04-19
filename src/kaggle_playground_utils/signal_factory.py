@@ -57,7 +57,15 @@ def _build_arithmetic(df: pd.DataFrame, numeric: list[str]) -> dict:
         out[f"log1p_{c}"] = (np.log1p(np.abs(v)), f"log(1 + |{c}|)")
         out[f"sqrt_{c}"] = (np.sqrt(np.abs(v)), f"sqrt(|{c}|)")
         out[f"square_{c}"] = (v ** 2, f"{c}²")
+        out[f"cube_{c}"] = (v ** 3, f"{c}³")
         out[f"inv_{c}"] = (1.0 / (np.abs(v) + 1), f"1 / (|{c}| + 1)")
+        out[f"inv_sq_{c}"] = (1.0 / (v ** 2 + 1), f"1 / ({c}² + 1)")
+        # Fractional powers
+        out[f"pow03_{c}"] = (np.abs(v) ** 0.3, f"|{c}|^0.3")
+        out[f"pow07_{c}"] = (np.abs(v) ** 0.7, f"|{c}|^0.7")
+        # log of larger values
+        out[f"log2_{c}"] = (np.log2(np.abs(v) + 1), f"log2(|{c}| + 1)")
+        out[f"exp_small_{c}"] = (np.exp(-0.1 * np.abs(v)), f"exp(-0.1*|{c}|)")
     return out
 
 
@@ -79,12 +87,12 @@ def _build_binning(df: pd.DataFrame, numeric: list[str]) -> dict:
 
 
 def _build_thresholds(df: pd.DataFrame, numeric: list[str],
-                      n_scan: int = 30) -> dict:
-    """Threshold scan: for each numeric, test cutoffs at percentiles 5-95."""
+                      n_scan: int = 100) -> dict:
+    """Threshold scan with finer resolution (100 percentiles vs 30 previously)."""
     out = {}
     for c in numeric:
         v = df[c].values
-        percentiles = np.linspace(5, 95, n_scan)
+        percentiles = np.linspace(2, 98, n_scan)
         thresholds = np.quantile(v, percentiles / 100)
         for pct, thr in zip(percentiles, thresholds):
             out[f"lt_{c}_p{int(pct)}"] = ((v < thr).astype(int), f"{c} < {thr:.3f} (p{int(pct)})")
@@ -125,20 +133,51 @@ def _build_distance(df: pd.DataFrame, numeric: list[str]) -> dict:
 
 
 def _build_mod(df: pd.DataFrame, numeric: list[str]) -> dict:
+    """Expanded mod divisors for generator-artifact detection."""
     out = {}
     for c in numeric:
         v_int = (df[c].values * 100).astype(np.int64)
-        for m in [3, 5, 7, 13]:
+        for m in [3, 5, 7, 11, 13, 17, 19, 23, 29, 31, 37, 50, 100]:
             out[f"mod{m}_{c}"] = (v_int % m, f"int({c}*100) mod {m}")
     return out
 
 
 def _build_exotic(df: pd.DataFrame, numeric: list[str]) -> dict:
+    """Periodic transforms at multiple frequencies — round 1 found sin/cos at 0.1
+    as strong signals; test more frequencies."""
     out = {}
+    frequencies = [0.01, 0.05, 0.1, 0.2, 0.5, 1.0, 2.0]
     for c in numeric:
         v = df[c].values.astype(np.float64)
-        out[f"sin_{c}"] = (np.sin(v * 0.1), f"sin({c}*0.1)")
-        out[f"cos_{c}"] = (np.cos(v * 0.1), f"cos({c}*0.1)")
+        for f in frequencies:
+            out[f"sin{f}_{c}"] = (np.sin(v * f), f"sin({c}*{f})")
+            out[f"cos{f}_{c}"] = (np.cos(v * f), f"cos({c}*{f})")
+    return out
+
+
+def _build_cluster_distance(df: pd.DataFrame, numeric: list[str]) -> dict:
+    """Distance to KMeans centroids on scaled numerics.
+
+    Generates: for each of K clusters, the distance from each row to that
+    cluster's centroid. Useful for detecting sub-population structure
+    that trees can't derive from axis-aligned splits.
+    """
+    from sklearn.cluster import KMeans
+    from sklearn.preprocessing import StandardScaler
+
+    out = {}
+    if len(numeric) < 2:
+        return out
+    scaler = StandardScaler()
+    X_scaled = scaler.fit_transform(df[numeric].fillna(0).values)
+
+    for n_clusters in [3, 5, 8]:
+        km = KMeans(n_clusters=n_clusters, random_state=42, n_init=5)
+        km.fit(X_scaled)
+        for k in range(n_clusters):
+            centroid = km.cluster_centers_[k]
+            dist = np.linalg.norm(X_scaled - centroid, axis=1)
+            out[f"dist_km{n_clusters}_c{k}"] = (dist, f"distance to cluster {k} of {n_clusters}")
     return out
 
 
@@ -168,6 +207,7 @@ TRANSFORMATION_BUILDERS: list[tuple[str, Callable]] = [
     ("distance", _build_distance),
     ("mod", _build_mod),
     ("exotic", _build_exotic),
+    ("cluster_distance", _build_cluster_distance),
 ]
 
 

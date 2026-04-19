@@ -14,3 +14,7 @@ data/
 registry/
 *.npy
 *.pkl
+catboost_info/
+logs/
+diagnostics/
+submissions/
