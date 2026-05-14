@@ -1,7 +1,7 @@
 [project]
 name = "kaggle-playground-utils"
-version = "0.1.0"
-description = "Reusable toolkit for Kaggle Playground Series competitions: features, training, registry, blending, probes, diagnostics."
+version = "0.2.0"
+description = "Reusable toolkit for Kaggle Playground Series: harvesting public notebooks, curated public-mix blending, Drive sync, Colab env helpers, plus S6E4 registry/training/features modules."
 authors = [{name = "Ilja Grigorjev"}]
 readme = "README.md"
 license = {text = "MIT"}
