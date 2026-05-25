@@ -12,6 +12,15 @@ Two generations of tooling live here:
     - drive: Colab Drive restore/sync helpers
     - environment: Colab vs local detection, Kaggle CLI auth setup
 
+  process / diagnostics (cross-competition, added on the ROGII track 2026-05-25):
+    - observer + diary: experiment-diary discipline (hypothesis-before-result),
+      metric-agnostic via MetricSpec (works for AUC, RMSE, MAE, ...). matplotlib-free.
+    - viz: model-comparison plots (ρ matrix, score-rho scatter, fold boxplot) [needs [diagnose] extra]
+    - probes / diagnose / hypothesis / encoding: signal discovery + leakage-free encoders
+
+Submodules that need plotting (viz, probes, diagnose, hypothesis) are NOT eagerly
+imported here — install the `[diagnose]` extra and import them directly.
+
 See README.md for usage examples.
 See ~/knowledge-graph/kaggle/2026-19_s6e5-postmortem.md for empirical lessons.
 """
@@ -50,4 +59,12 @@ from kaggle_playground_utils.harvesting import (  # noqa: F401
     slug_to_tag,
     validate_oof_on_pool,
     validate_submission,
+)
+
+# Experiment-diary discipline (metric-agnostic) — matplotlib-free, safe to import eagerly.
+from kaggle_playground_utils.observer import (  # noqa: F401
+    Experiment,
+    MetricSpec,
+    add_note,
+    configure,
 )
