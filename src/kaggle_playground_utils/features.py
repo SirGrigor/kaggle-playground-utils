@@ -111,3 +111,61 @@ def formula_logits(df: pd.DataFrame, coefs: dict[str, dict[str, float]],
             if feat in class_coefs:
                 df[col] = df[col] + class_coefs[feat] * df[feat]
     return df
+
+
+def safe_label_encode(
+    train_df: pd.DataFrame,
+    test_df: pd.DataFrame,
+    cols: list[str],
+    min_count: int = 5,
+) -> tuple[pd.DataFrame, pd.DataFrame]:
+    """Frequency-thresholded label encoding (fit on train only).
+
+    Values whose train count < `min_count` are folded into a shared "other"
+    bucket. Test values unseen in train (or rare) also map to "other". Returns
+    (train_encoded, test_encoded) with dense int codes per column. Code 0 is
+    always reserved for the "other"/unseen bucket; real categories start at 1.
+
+    Leakage-safe: the kept-value vocabulary and codes are derived from train
+    only and applied to test.
+    """
+    train_enc = pd.DataFrame(index=train_df.index)
+    test_enc = pd.DataFrame(index=test_df.index)
+    for c in cols:
+        counts = train_df[c].value_counts()
+        kept = counts[counts >= min_count].index
+        mapping = {v: i + 1 for i, v in enumerate(sorted(kept, key=lambda x: str(x)))}
+        train_enc[c] = train_df[c].map(mapping).fillna(0).astype("int32")
+        test_enc[c] = test_df[c].map(mapping).fillna(0).astype("int32")
+    return train_enc, test_enc
+
+
+def decimal_round_by_magnitude(df: pd.DataFrame, num_cols: list[str]) -> pd.DataFrame:
+    """Round numeric columns by magnitude of their max absolute value.
+
+    3 dp if max(|col|) < 10, 2 dp if < 100, else 1 dp. Synthetic generators
+    often emit values at a fixed precision; trailing digits are noise. Returns a
+    copy of `df` with the listed columns rounded.
+    """
+    df = df.copy()
+    for c in num_cols:
+        m = float(np.abs(df[c].to_numpy(dtype=np.float64)).max())
+        ndp = 3 if m < 10 else (2 if m < 100 else 1)
+        df[c] = df[c].round(ndp)
+    return df
+
+
+def drop_uniform_in_test(
+    train_df: pd.DataFrame,
+    test_df: pd.DataFrame,
+) -> tuple[pd.DataFrame, pd.DataFrame, list[str]]:
+    """Drop columns that are constant (nunique==1) in `test_df`.
+
+    Such columns carry no discriminative signal at inference time. Only columns
+    present in test are checked; columns unique to train are retained. Returns
+    (train_kept, test_kept, kept_cols).
+    """
+    drop = [c for c in test_df.columns if test_df[c].nunique(dropna=False) == 1]
+    kept = [c for c in train_df.columns if c not in drop]
+    test_kept = [c for c in test_df.columns if c not in drop]
+    return train_df[kept], test_df[test_kept], kept

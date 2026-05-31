@@ -68,3 +68,23 @@ from kaggle_playground_utils.observer import (  # noqa: F401
     add_note,
     configure,
 )
+
+# Feature engineering + encoders (pandas/numpy only, safe to import eagerly).
+from kaggle_playground_utils.encoding import (  # noqa: F401
+    kfold_target_encode,
+    pairwise_concat_target_encode,
+    quantile_bin,
+)
+from kaggle_playground_utils.features import (  # noqa: F401
+    categorical_one_hot,
+    decimal_round_by_magnitude,
+    digit_features,
+    drop_uniform_in_test,
+    formula_logits,
+    get_cat_cols,
+    safe_label_encode,
+    threshold_booleans,
+)
+
+# Monotone post-processing (numpy only; metric_fn injected by caller).
+from kaggle_playground_utils.postprocess import bias_tune  # noqa: F401
