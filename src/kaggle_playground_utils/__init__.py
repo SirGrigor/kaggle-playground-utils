@@ -25,7 +25,7 @@ See README.md for usage examples.
 See ~/knowledge-graph/kaggle/2026-19_s6e5-postmortem.md for empirical lessons.
 """
 
-__version__ = "0.2.0"
+__version__ = "0.4.0"
 
 
 # v0.2 exports (S6E5 additions) — explicit imports for IDE/REPL convenience
@@ -88,3 +88,15 @@ from kaggle_playground_utils.features import (  # noqa: F401
 
 # Monotone post-processing (numpy only; metric_fn injected by caller).
 from kaggle_playground_utils.postprocess import bias_tune  # noqa: F401
+
+# Task-aware evaluation reporting + error-matrix graphic UI (the training
+# chokepoint). sklearn imported lazily inside; matplotlib only when plots=True,
+# so this is safe to import eagerly.
+from kaggle_playground_utils.evaluate import (  # noqa: F401
+    confusion_at_threshold,
+    detect_task,
+    plot_confusion_binary,
+    plot_confusion_multiclass,
+    rate_matched_threshold,
+    report,
+)
