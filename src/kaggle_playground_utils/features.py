@@ -69,9 +69,15 @@ def threshold_booleans(df: pd.DataFrame, thresholds: dict[str, float],
 def get_cat_cols(df: pd.DataFrame) -> list[str]:
     """Pandas-version-safe categorical column detection.
 
-    Pandas 4 uses `str` dtype; pandas 2 uses `object`. This handles both.
+    Some pandas versions reject the "string"/"str" selectors in select_dtypes
+    ("string dtypes are not allowed, use 'object' instead"). Select object+
+    category via select_dtypes, then add nullable StringDtype columns by dtype
+    name — works across pandas 2/3/4.
     """
-    return df.select_dtypes(include=["object", "string", "str", "category"]).columns.tolist()
+    cols = df.select_dtypes(include=["object", "category"]).columns.tolist()
+    extra = [c for c in df.columns
+             if c not in cols and str(df[c].dtype).startswith("string")]
+    return cols + extra
 
 
 def categorical_one_hot(df: pd.DataFrame, col: str, values: list[str],
